@@ -1,0 +1,21 @@
+spring:
+  shell:
+    interactive:
+      enabled: true
+
+  application:
+    name: tstack
+
+application:
+  title: Tstack
+  version: @project.version@
+
+  datasource:
+    url: jdbc:h2:${HOME}/.tstack/tstack
+    driver-class-name: org.h2.Driver
+
+
+#logging:
+#  level:
+#    root: ERROR
+
