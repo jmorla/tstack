@@ -5,14 +5,28 @@ spring:
     virtual:
       enabled: true
 
-application:
-  title: Tstack
-  version: @project.version@
-
   datasource:
     url: jdbc:h2:${HOME}/.tstack/tstack
     driver-class-name: org.h2.Driver
 
+application:
+  title: Tstack
+  version: @project.version@
+
+
+tstack:
+  providers:
+    ctrader:
+      enabled: true
+      client_id: ${CTRADER_CLIENT_ID}
+      client_secret: ${CTRADER_CLIENT_SECRET}
+      access_token: ${CTRADER_ACCESS_TOKEN}
+      account_id: ${CTRADER_ACCOUNT_ID:0}
+      host: live.ctraderapi.com
+      port: 5035
+      enable_ssl: true
+      idle_timeout: 30000
+      connection_timeout: 30000
 
 #logging:
 #  level:
