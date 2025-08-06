@@ -10,22 +10,15 @@
 <div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container mt-4">
-    <h2>Download Market Data</h2>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item">Datasets</li>
-            <li class="breadcrumb-item active" aria-current="page">Download</li>
-        </ol>
-    </nav>
+    <h2 class="mb-4">Download Market Data</h2>
     <form th:action="@{/datasets/download}" method="post">
         <div class="mb-3">
             <label class="form-label">Symbols</label>
             <div class="card" style="height: 200px; overflow-y: scroll;">
                 <div class="card-body">
                     <div th:each="symbol : ${symbols}" class="form-check">
-                        <input class="form-check-input" type="checkbox" th:value="${symbol.name}" th:id="${'symbol_' + symbol.id}" name="symbols">
-                        <label class="form-check-label" th:for="${'symbol_' + symbol.id}" th:text="${symbol.name + ' - ' + symbol.description}">
+                        <input class="form-check-input" type="checkbox" th:value="${symbol.name}" th:id="${'symbol_' + symbol.ctraderId}" name="symbols">
+                        <label class="form-check-label" th:for="${'symbol_' + symbol.ctraderId}" th:text="${symbol.name + ' - ' + symbol.description}">
                         </label>
                     </div>
                 </div>
