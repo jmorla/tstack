@@ -1,7 +1,6 @@
-package com.jmorla.tstack.ctrader.client;
+package com.jmorla.tstack.ctrader;
 
 import com.google.protobuf.GeneratedMessage;
-import com.jmorla.tstack.ctrader.mappers.CtraderMapper;
 import com.jmorla.tstack.entities.TimeFrame;
 import com.xtrader.protocol.openapi.v2.ProtoOAAccountAuthReq;
 import com.xtrader.protocol.openapi.v2.ProtoOAApplicationAuthReq;

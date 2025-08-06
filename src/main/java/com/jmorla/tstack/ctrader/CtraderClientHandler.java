@@ -1,4 +1,4 @@
-package com.jmorla.tstack.ctrader.client;
+package com.jmorla.tstack.ctrader;
 
 import com.xtrader.protocol.openapi.v2.ProtoOAErrorRes;
 import com.xtrader.protocol.openapi.v2.model.ProtoOAPayloadType;

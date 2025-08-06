@@ -1,4 +1,4 @@
-package com.jmorla.tstack.ctrader.client;
+package com.jmorla.tstack.ctrader;
 
 public class CTraderApiClientBuilder {
   private String host;

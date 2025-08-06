@@ -1,7 +1,6 @@
-package com.jmorla.tstack.ctrader.client;
+package com.jmorla.tstack.ctrader;
 
 import com.google.protobuf.GeneratedMessage;
-import com.jmorla.tstack.ctrader.mappers.CtraderMapper;
 import com.xtrader.protocol.openapi.v2.model.ProtoOAPayloadType;
 import com.xtrader.protocol.proto.commons.ProtoMessage;
 import io.netty.bootstrap.Bootstrap;

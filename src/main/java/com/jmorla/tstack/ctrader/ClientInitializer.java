@@ -1,4 +1,4 @@
-package com.jmorla.tstack.ctrader.client;
+package com.jmorla.tstack.ctrader;
 
 import com.xtrader.protocol.proto.commons.ProtoMessage;
 import io.netty.channel.Channel;

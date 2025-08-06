@@ -1,7 +1,7 @@
 package com.jmorla.tstack.config;
 
-import com.jmorla.tstack.ctrader.client.CtraderApiClient;
-import com.jmorla.tstack.ctrader.client.CtraderAuthenticator;
+import com.jmorla.tstack.ctrader.CtraderApiClient;
+import com.jmorla.tstack.ctrader.CtraderAuthenticator;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

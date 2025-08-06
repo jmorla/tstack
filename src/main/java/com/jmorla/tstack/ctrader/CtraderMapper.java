@@ -1,4 +1,4 @@
-package com.jmorla.tstack.ctrader.mappers;
+package com.jmorla.tstack.ctrader;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessage;

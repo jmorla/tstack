@@ -1,4 +1,4 @@
-package com.jmorla.tstack.ctrader.client;
+package com.jmorla.tstack.ctrader;
 
 import com.jmorla.tstack.config.TstackProperties;
 import com.xtrader.protocol.openapi.v2.ProtoOAAccountAuthReq;
