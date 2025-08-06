@@ -1,10 +1,9 @@
 spring:
-  shell:
-    interactive:
-      enabled: true
-
   application:
     name: tstack
+  threads:
+    virtual:
+      enabled: true
 
 application:
   title: Tstack
