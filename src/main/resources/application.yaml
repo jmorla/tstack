@@ -28,7 +28,7 @@ tstack:
       idle_timeout: 30000
       connection_timeout: 30000
 
-#logging:
-#  level:
-#    root: ERROR
+logging:
+  level:
+    com.jmorla.tstack: DEBUG
 

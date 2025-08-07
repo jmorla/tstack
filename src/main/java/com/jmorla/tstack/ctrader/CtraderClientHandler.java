@@ -3,6 +3,7 @@ package com.jmorla.tstack.ctrader;
 import com.xtrader.protocol.openapi.v2.ProtoOAErrorRes;
 import com.xtrader.protocol.openapi.v2.model.ProtoOAPayloadType;
 import com.xtrader.protocol.proto.commons.ProtoMessage;
+import com.xtrader.protocol.proto.commons.model.ProtoPayloadType;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -36,8 +37,12 @@ public class CtraderClientHandler extends SimpleChannelInboundHandler<ProtoMessa
       future.completeExceptionally(
           new RuntimeException("%s : %s".formatted(error.getErrorCode(), error.getDescription())));
     }
-    if (protoMessage.getPayloadType() == ProtoOAPayloadType.PROTO_OA_ACCOUNT_AUTH_REQ_VALUE) {
+    if (protoMessage.getPayloadType() == ProtoOAPayloadType.PROTO_OA_ACCOUNT_AUTH_RES_VALUE) {
       configureHeartBeatEventWorker(channelHandlerContext);
+    }
+
+    if(protoMessage.getPayloadType() == ProtoPayloadType.HEARTBEAT_EVENT_VALUE) {
+      return;
     }
 
     future.complete(protoMessage);
