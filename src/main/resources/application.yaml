@@ -4,6 +4,8 @@ spring:
   threads:
     virtual:
       enabled: true
+  thymeleaf:
+    cache: false
 
   datasource:
     url: jdbc:h2:${HOME}/.tstack/tstack
