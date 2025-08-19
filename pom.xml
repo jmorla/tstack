@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>24</java.version>
 		<protobuf-java.version>4.31.1</protobuf-java.version>
 		<netty.version>4.2.3.Final</netty.version>
 		<htmx-spring.version>4.0.1</htmx-spring.version>

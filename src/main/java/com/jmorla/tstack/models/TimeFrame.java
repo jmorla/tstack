@@ -1,5 +1,8 @@
-package com.jmorla.tstack.entities;
+package com.jmorla.tstack.models;
 
+import lombok.Getter;
+
+@Getter
 public enum TimeFrame {
     M1(1),   // 1 minute
     M2(2),   // 2 minutes
@@ -22,7 +25,4 @@ public enum TimeFrame {
         this.value = value;
     }
 
-    public int getValue() {
-        return value;
-    }
 }

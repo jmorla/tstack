@@ -3,7 +3,7 @@ package com.jmorla.tstack.ctrader;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.jmorla.tstack.entities.TimeFrame;
+import com.jmorla.tstack.models.TimeFrame;
 import com.xtrader.protocol.openapi.v2.*;
 import com.xtrader.protocol.openapi.v2.model.ProtoOAPayloadType;
 import com.xtrader.protocol.openapi.v2.model.ProtoOATrendbarPeriod;

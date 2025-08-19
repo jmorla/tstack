@@ -11,6 +11,11 @@ spring:
     url: jdbc:h2:${HOME}/.tstack/tstack
     driver-class-name: org.h2.Driver
 
+server:
+  error:
+    whitelabel:
+      enabled: false
+
 application:
   title: Tstack
   version: @project.version@

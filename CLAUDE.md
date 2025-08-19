@@ -1,0 +1,1 @@
+- javascript and css file are in @src/main/resources/static/assets/
