@@ -1,1 +1,5 @@
 - javascript and css file are in @src/main/resources/static/assets/
+- Always use lombok
+- by wisely with the code you generate do not overdo or generate no required method only what is specified in prompts
+- for service classes always create an interface
+- make use of htmx and the spring-boot-htmx helper

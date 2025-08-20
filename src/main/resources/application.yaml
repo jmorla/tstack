@@ -8,8 +8,10 @@ spring:
     cache: false
 
   datasource:
-    url: jdbc:h2:${HOME}/.tstack/tstack
-    driver-class-name: org.h2.Driver
+    url: jdbc:postgresql://localhost:5432/tstack
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:}
 
 server:
   error:

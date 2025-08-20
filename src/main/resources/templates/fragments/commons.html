@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+
+    <div th:fragment="pagination" class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6"
+         th:with="currentPage=${offset/limit + 1}, totalPages=${(total + limit - 1) / limit}, startResult=${offset + 1}, endResult=${offset + limit > total ? total : offset + limit}">
+        <!-- Mobile Pagination -->
+        <div class="flex flex-col gap-3 sm:hidden">
+            <div class="flex items-center justify-between">
+                <p class="text-sm text-gray-700">
+                    <span class="font-medium" th:text="${currentPage}">2</span> of <span class="font-medium" th:text="${totalPages}">10</span> pages
+                </p>
+                <div class="flex items-center gap-2">
+                    <label class="text-xs text-gray-700">Show:</label>
+                    <select class="px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500">
+                        <option value="5" th:selected="${limit == 5}">5</option>
+                        <option value="10" th:selected="${limit == 10}">10</option>
+                        <option value="25" th:selected="${limit == 25}">25</option>
+                        <option value="50" th:selected="${limit == 50}">50</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-between">
+                <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        th:disabled="${currentPage == 1}">Previous</button>
+                <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        th:disabled="${currentPage == totalPages}">Next</button>
+            </div>
+        </div>
+
+        <!-- Desktop/Tablet Pagination -->
+        <div class="hidden sm:flex sm:items-center sm:justify-between">
+            <div class="flex items-center gap-4">
+                <p class="text-sm text-gray-700">
+                    Showing <span class="font-medium" th:text="${startResult}">1</span> to <span class="font-medium" th:text="${endResult}">10</span> of <span class="font-medium" th:text="${total}">95</span> results
+                </p>
+                <div class="hidden md:flex items-center gap-2">
+                    <label class="text-sm text-gray-700">Show:</label>
+                    <select class="px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500">
+                        <option value="5" th:selected="${limit == 5}">5</option>
+                        <option value="10" th:selected="${limit == 10}">10</option>
+                        <option value="25" th:selected="${limit == 25}">25</option>
+                        <option value="50" th:selected="${limit == 50}">50</option>
+                        <option value="100" th:selected="${limit == 100}">100</option>
+                    </select>
+                    <span class="text-sm text-gray-700">per page</span>
+                </div>
+            </div>
+            <div>
+                <nav class="flex items-center gap-1" aria-label="Pagination">
+                    <button class="relative inline-flex items-center px-2 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                            th:disabled="${currentPage == 1}">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                    
+                    <th:block th:if="${totalPages <= 7}">
+                        <button th:each="page : ${#numbers.sequence(1, totalPages)}"
+                                th:text="${page}"
+                                th:class="${page == currentPage} ? 'bg-red-50 border-red-500 text-red-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md' : 'relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md'">1</button>
+                    </th:block>
+                    
+                    <th:block th:if="${totalPages > 7}">
+                        <button th:if="${currentPage > 1}" th:text="1"
+                                th:class="${1 == currentPage} ? 'bg-red-50 border-red-500 text-red-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md' : 'relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md'">1</button>
+                        
+                        <span th:if="${currentPage > 4}" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700">...</span>
+                        
+                        <th:block th:each="page : ${#numbers.sequence(T(java.lang.Math).max(2, currentPage - 2), T(java.lang.Math).min(totalPages - 1, currentPage + 2))}">
+                            <button th:text="${page}"
+                                    th:class="${page == currentPage} ? 'bg-red-50 border-red-500 text-red-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md' : 'relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md'">2</button>
+                        </th:block>
+                        
+                        <span th:if="${currentPage < totalPages - 3}" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700">...</span>
+                        
+                        <button th:if="${totalPages > 1}" th:text="${totalPages}"
+                                th:class="${totalPages == currentPage} ? 'bg-red-50 border-red-500 text-red-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md' : 'relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md'">10</button>
+                    </th:block>
+                    
+                    <button class="relative inline-flex items-center px-2 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                            th:disabled="${currentPage == totalPages}">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

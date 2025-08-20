@@ -7,7 +7,7 @@
 
 -- Provider table for data sources
 CREATE TABLE providers (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     description VARCHAR(500),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -16,7 +16,7 @@ CREATE TABLE providers (
 
 -- Instruments table
 CREATE TABLE instruments (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id BIGSERIAL PRIMARY KEY,
     provider_id BIGINT NOT NULL,
     platform_id VARCHAR(50) NOT NULL,
     symbol VARCHAR(20) NOT NULL,
@@ -38,7 +38,7 @@ CREATE INDEX idx_provider ON instruments(provider_id);
 
 -- Dataset metadata table (one-to-one with instruments)
 CREATE TABLE dataset_metadata (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id BIGSERIAL PRIMARY KEY,
     instrument_id BIGINT NOT NULL UNIQUE,
     total_records BIGINT NOT NULL DEFAULT 0,
     start_date TIMESTAMP,
@@ -55,7 +55,7 @@ CREATE TABLE dataset_metadata (
 
 -- Price data table for 1-minute OHLCV data
 CREATE TABLE price_data (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id BIGSERIAL PRIMARY KEY,
     instrument_id BIGINT NOT NULL,
     timestamp TIMESTAMP NOT NULL,
     open_price DECIMAL(20,8) NOT NULL,
