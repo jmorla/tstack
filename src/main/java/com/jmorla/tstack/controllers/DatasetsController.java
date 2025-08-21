@@ -82,7 +82,7 @@ public class DatasetsController {
         log.debug("Processing HTMX datatable request with limit={}, offset={}", limit, offset);
 
         // REMOVE THIS LINE LATER
-        delay(3000);
+        delay(2000);
 
         var res = datasetService.findDatasets(FindDatasetRequest.builder()
                         .limit(limit)

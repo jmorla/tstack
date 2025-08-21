@@ -7,6 +7,7 @@
     <script type="module" crossorigin src="/assets/modulepreload-polyfill.js"></script>
     <script type="module" crossorigin src="/assets/global.js"></script>
     <script type="module" crossorigin src="/assets/htmx.min.js"></script>
+    <script src="/assets/alpinejs.min.js" defer></script>
     <link rel="stylesheet" crossorigin href="/assets/style.css">
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -36,7 +37,10 @@
                 </div>
                 
                 <!-- Datasets Card -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 relative">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 relative" 
+                     x-data="{ loading: false }"
+                     @htmx:before-request="loading = true"
+                     @htmx:after-request="loading = false">
                     <div hx-get="/datasets/datatable"
                          hx-trigger="load"
                          hx-indicator="#datasets-loading"
