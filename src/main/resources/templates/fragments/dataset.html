@@ -94,7 +94,7 @@
     </div>
 
     <form th:fragment="datatable"
-          hx-trigger="change"
+          hx-trigger="change, submit"
           hx-get="/datasets/datatable"
           hx-swap="outerHTML"
           hx-boost="true"
