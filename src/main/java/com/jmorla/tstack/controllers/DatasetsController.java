@@ -1,7 +1,10 @@
 package com.jmorla.tstack.controllers;
 
+import com.jmorla.tstack.dto.ProviderRecord;
 import com.jmorla.tstack.models.FindDatasetRequest;
 import com.jmorla.tstack.services.DatasetService;
+import com.jmorla.tstack.services.ProviderService;
+import com.jmorla.tstack.utils.PaginationViewHelper;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * Spring MVC controller for handling dataset-related web requests.
@@ -30,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class DatasetsController {
 
     private final DatasetService datasetService;
+    private final ProviderService providerService;
 
     /**
      * Provides the active menu identifier for all controller methods.
@@ -43,6 +49,20 @@ public class DatasetsController {
     @ModelAttribute("activeMenu")
     public String activeMenu() {
         return "datasets";
+    }
+
+    /**
+     * Provides the list of all providers for all controller methods.
+     * 
+     * <p>This method is annotated with {@code @ModelAttribute} to automatically
+     * add the providers list to all views rendered by this controller.</p>
+     * 
+     * @return the list of provider records
+     * @since 1.0
+     */
+    @ModelAttribute("providers")
+    public List<ProviderRecord> providers() {
+        return providerService.getProviders();
     }
 
     /**
@@ -89,12 +109,9 @@ public class DatasetsController {
                         .offset(offset)
                 .build());
 
-        log.info("Retrieved {} datasets out of {} total", res.getDatasets().size(), res.getTotal());
+        log.info("Retrieved {} datasets out of {} total", res.getContent().size(), res.getTotal());
 
-        model.addAttribute("datasets", res.getDatasets());
-        model.addAttribute("limit", res.getLimit());
-        model.addAttribute("offset", res.getOffset());
-        model.addAttribute("total", res.getTotal());
+        PaginationViewHelper.addPaginationAttributes(model, res, "datasets");
 
         return "fragments/dataset :: datatable";
     }

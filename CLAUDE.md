@@ -3,3 +3,5 @@
 - by wisely with the code you generate do not overdo or generate no required method only what is specified in prompts
 - for service classes always create an interface
 - make use of htmx and the spring-boot-htmx helper
+- DTO object must have meanful names, never use DTO as part of the name
+- use fully qualified names only when there is a package conflit, always import and then use
