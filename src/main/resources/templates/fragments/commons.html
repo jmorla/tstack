@@ -9,29 +9,6 @@
 
     <div th:fragment="pagination" class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6"
          th:with="currentPage=${offset/limit + 1}, totalPages=${(total + limit - 1) / limit}, startResult=${offset + 1}, endResult=${offset + limit > total ? total : offset + limit}">
-        <!-- Mobile Pagination -->
-        <div class="flex flex-col gap-3 sm:hidden">
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-700">
-                    <span class="font-medium" th:text="${currentPage}">2</span> of <span class="font-medium" th:text="${totalPages}">10</span> pages
-                </p>
-                <div class="flex items-center gap-2">
-                    <label class="text-xs text-gray-700">Show:</label>
-                    <select class="px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500">
-                        <option value="5" th:selected="${limit == 5}">5</option>
-                        <option value="10" th:selected="${limit == 10}">10</option>
-                        <option value="25" th:selected="${limit == 25}">25</option>
-                        <option value="50" th:selected="${limit == 50}">50</option>
-                    </select>
-                </div>
-            </div>
-            <div class="flex justify-between">
-                <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                        th:disabled="${currentPage == 1}">Previous</button>
-                <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                        th:disabled="${currentPage == totalPages}">Next</button>
-            </div>
-        </div>
 
         <!-- Desktop/Tablet Pagination -->
         <div class="hidden sm:flex sm:items-center sm:justify-between">
@@ -41,12 +18,13 @@
                 </p>
                 <div class="hidden md:flex items-center gap-2">
                     <label class="text-sm text-gray-700">Show:</label>
-                    <select class="px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500">
+                    <select class="px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500" name="limit">
                         <option value="5" th:selected="${limit == 5}">5</option>
                         <option value="10" th:selected="${limit == 10}">10</option>
                         <option value="25" th:selected="${limit == 25}">25</option>
                         <option value="50" th:selected="${limit == 50}">50</option>
                         <option value="100" th:selected="${limit == 100}">100</option>
+                        <input type="hidden" name="offset" value="0"/>
                     </select>
                     <span class="text-sm text-gray-700">per page</span>
                 </div>

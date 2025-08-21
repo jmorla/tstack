@@ -93,15 +93,22 @@
         </table>
     </div>
 
-    <div th:fragment="datatable">
+    <form th:fragment="datatable"
+          hx-trigger="change"
+          hx-get="/datasets/datatable"
+          hx-swap="outerHTML"
+          hx-boost="true"
+          class="hx-content"
+          hx-indicator="#datasets-loading"
+    >
         <div th:replace="~{fragments/dataset :: dataset-filter}"></div>
         <div th:replace="~{fragments/dataset :: dataset-table}"></div>
         <div th:replace="~{fragments/commons :: pagination}"></div>
-    </div>
+    </form>
 
 
 <!-- Loading Skeleton Card -->
-<div th:fragment="datatable-loading" id="datasets-loading">
+<div th:fragment="datasets-loading" id="datasets-loading" class="loading-indicator">
     <div class="px-6 py-4 border-b border-gray-200">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <!-- Search and Filter Section Skeleton -->

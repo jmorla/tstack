@@ -34,14 +34,17 @@
                         </a>
                     </div>
                 </div>
-
+                
                 <!-- Datasets Card -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 relative" 
-                     hx-get="/datasets/datatable" 
-                     hx-trigger="load" 
-                     hx-swap="innerHTML"
-                     hx-indicator="#datatable-loading">
-                    <div th:replace="~{fragments/dataset :: datatable-loading}"></div>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 relative">
+                    <div hx-get="/datasets/datatable"
+                         hx-trigger="load"
+                         hx-indicator="#datasets-loading"
+                         hx-swap="outerHTML">
+                    </div>
+
+                    <!-- Loading Indicator -->
+                    <div th:replace="~{fragments/dataset :: datasets-loading}"></div>
                 </div>
             </div>
         </main>

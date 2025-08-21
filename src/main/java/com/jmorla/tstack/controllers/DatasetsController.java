@@ -4,6 +4,7 @@ import com.jmorla.tstack.models.FindDatasetRequest;
 import com.jmorla.tstack.services.DatasetService;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @version 1.0
  * @since 1.0
  */
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/datasets")
@@ -55,6 +57,7 @@ public class DatasetsController {
      */
     @GetMapping
     public String datasets(Model model) {
+        log.debug("Rendering datasets page");
         return "datasets";
     }
 
@@ -76,10 +79,17 @@ public class DatasetsController {
     public String datatable(@RequestParam(defaultValue = "5") int limit,
                            @RequestParam(defaultValue = "0") int offset,
                            Model model) {
+        log.debug("Processing HTMX datatable request with limit={}, offset={}", limit, offset);
+
+        // REMOVE THIS LINE LATER
+        delay(3000);
+
         var res = datasetService.findDatasets(FindDatasetRequest.builder()
                         .limit(limit)
                         .offset(offset)
                 .build());
+
+        log.info("Retrieved {} datasets out of {} total", res.getDatasets().size(), res.getTotal());
 
         model.addAttribute("datasets", res.getDatasets());
         model.addAttribute("limit", res.getLimit());
@@ -87,5 +97,13 @@ public class DatasetsController {
         model.addAttribute("total", res.getTotal());
 
         return "fragments/dataset :: datatable";
+    }
+
+    private static void delay(int delay) {
+        try {
+            Thread.sleep(delay);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
