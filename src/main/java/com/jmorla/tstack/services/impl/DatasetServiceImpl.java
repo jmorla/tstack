@@ -2,7 +2,7 @@ package com.jmorla.tstack.services.impl;
 
 import com.jmorla.tstack.mappers.DatasetMapper;
 import com.jmorla.tstack.models.DatasetRecord;
-import com.jmorla.tstack.models.FindDatasetRequest;
+import com.jmorla.tstack.models.PageableRequest;
 import com.jmorla.tstack.models.FindDatasetResponse;
 import com.jmorla.tstack.models.PagedResponse;
 import com.jmorla.tstack.repositories.InstrumentRepository;
@@ -44,11 +44,11 @@ public class DatasetServiceImpl implements DatasetService {
      *         and total count of available datasets with providers
      * @throws IllegalArgumentException if the request parameter is null
      * @since 1.0
-     * @see FindDatasetRequest
+     * @see PageableRequest
      * @see FindDatasetResponse
      */
     @Override
-    public PagedResponse<DatasetRecord> findDatasets(FindDatasetRequest request) {
+    public PagedResponse<DatasetRecord> findDatasets(PageableRequest request) {
         var datasets = instrumentRepository.findAllWithProvider(request.getLimit(), request.getOffset())
                 .stream().map(datasetMapper::mapToDatasetRecord)
                 .toList();

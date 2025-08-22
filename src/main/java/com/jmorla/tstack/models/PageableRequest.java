@@ -5,7 +5,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class FindDatasetRequest {
+public class PageableRequest {
     int limit;
     int offset;
 }

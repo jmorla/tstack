@@ -1,7 +1,7 @@
 package com.jmorla.tstack.controllers;
 
 import com.jmorla.tstack.dto.ProviderRecord;
-import com.jmorla.tstack.models.FindDatasetRequest;
+import com.jmorla.tstack.models.PageableRequest;
 import com.jmorla.tstack.services.DatasetService;
 import com.jmorla.tstack.services.ProviderService;
 import com.jmorla.tstack.utils.PaginationViewHelper;
@@ -104,7 +104,7 @@ public class DatasetsController {
         // REMOVE THIS LINE LATER
         delay(2000);
 
-        var res = datasetService.findDatasets(FindDatasetRequest.builder()
+        var res = datasetService.findDatasets(PageableRequest.builder()
                         .limit(limit)
                         .offset(offset)
                 .build());
