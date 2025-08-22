@@ -100,9 +100,6 @@ public class DatasetsController {
         log.debug("Processing HTMX datatable request with limit={}, offset={}, instrument={}, status={}, provider={}",
                 request.getLimit(), request.getOffset(), request.getInstrument(), request.getStatus(), request.getProvider());
 
-        // REMOVE THIS LINE LATER
-        delay(2000);
-
         var res = hasFilterParameters(request.getInstrument(), request.getStatus(), request.getProvider())
                 ? datasetService.searchDatasets(request)
                 : datasetService.findDatasets(new PageableRequest(request.getLimit(), request.getOffset()));

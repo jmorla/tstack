@@ -92,7 +92,7 @@
     </div>
 
     <form th:fragment="datatable"
-          hx-trigger="submit"
+          hx-trigger="submit, change from:select[name='limit']"
           hx-get="/datasets/datatable"
           hx-swap="outerHTML"
           hx-boost="true"
