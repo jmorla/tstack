@@ -97,7 +97,7 @@ public class DatasetsController {
     @HxRequest
     @GetMapping("/datatable")
     public String datatable(@ModelAttribute DatasetSearchRequest request, Model model) {
-        log.debug("Processing HTMX datatable request with limit={}, offset={}, instrumentFilter={}, status={}, providerFilter={}", 
+        log.debug("Processing HTMX datatable request with limit={}, offset={}, instrument={}, status={}, provider={}",
                 request.getLimit(), request.getOffset(), request.getInstrument(), request.getStatus(), request.getProvider());
 
         // REMOVE THIS LINE LATER
