@@ -1,8 +1,10 @@
 package com.jmorla.tstack.models;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class DatasetSearchRequest extends PageableRequest {
     private final String instrument;
     private final String status;

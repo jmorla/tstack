@@ -75,7 +75,7 @@ public interface InstrumentRepository extends CrudRepository<Instrument, Long>,
             FROM instruments i
             LEFT JOIN providers p ON i.provider_id = p.id
             LEFT JOIN dataset_metadata dm ON i.id = dm.instrument_id
-            WHERE (:instrumentFilter IS NULL OR LOWER(i.name) LIKE LOWER(:instrumentFilter) OR LOWER(i.description) LIKE LOWER(:instrumentFilter))
+            WHERE (:instrumentFilter IS NULL OR LOWER(i.name) LIKE LOWER(:instrumentFilter) OR LOWER(i.symbol) LIKE LOWER(:instrumentFilter))
               AND (:status IS NULL OR LOWER(dm.status) = LOWER(:status))
               AND (:providerFilter IS NULL OR LOWER(p.name) LIKE LOWER(:providerFilter))
             ORDER BY i.id
@@ -93,7 +93,7 @@ public interface InstrumentRepository extends CrudRepository<Instrument, Long>,
             FROM instruments i
             LEFT JOIN providers p ON i.provider_id = p.id
             LEFT JOIN dataset_metadata dm ON i.id = dm.instrument_id
-            WHERE (:instrumentFilter IS NULL OR LOWER(i.name) LIKE LOWER(:instrumentFilter) OR LOWER(i.description) LIKE LOWER(:instrumentFilter))
+            WHERE (:instrumentFilter IS NULL OR LOWER(i.name) LIKE LOWER(:instrumentFilter) OR LOWER(i.symbol) LIKE LOWER(:instrumentFilter))
               AND (:status IS NULL OR LOWER(dm.status) = LOWER(:status))
               AND (:providerFilter IS NULL OR LOWER(p.name) LIKE LOWER(:providerFilter))
             """)

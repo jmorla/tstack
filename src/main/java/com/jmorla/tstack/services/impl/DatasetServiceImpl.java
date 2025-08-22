@@ -6,6 +6,7 @@ import com.jmorla.tstack.repositories.InstrumentRepository;
 import com.jmorla.tstack.services.DatasetService;
 import com.jmorla.tstack.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -25,6 +26,7 @@ import java.util.Objects;
  * @see InstrumentRepository
  * @see DatasetMapper
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DatasetServiceImpl implements DatasetService {
@@ -49,16 +51,21 @@ public class DatasetServiceImpl implements DatasetService {
      */
     @Override
     public PagedResponse<DatasetRecord> findDatasets(PageableRequest request) {
+        log.debug("Finding datasets with pagination - limit: {}, offset: {}", request.getLimit(), request.getOffset());
+        
         var datasets = instrumentRepository.findAllWithProvider(request.getLimit(), request.getOffset())
                 .stream().map(datasetMapper::mapToDatasetRecord)
                 .toList();
+
+        var totalCount = instrumentRepository.countAllWithProvider();
+        log.info("Found {} datasets out of {} total", datasets.size(), totalCount);
 
         return PagedResponse
                 .<DatasetRecord>builder()
                 .content(datasets)
                 .limit(request.getLimit())
                 .offset(request.getOffset())
-                .total(instrumentRepository.countAllWithProvider())
+                .total(totalCount)
                 .build();
     }
 
@@ -78,14 +85,20 @@ public class DatasetServiceImpl implements DatasetService {
      */
     @Override
     public PagedResponse<DatasetRecord> searchDatasets(DatasetSearchRequest request) {
+        log.debug("Searching datasets with filters - instrument: {}, status: {}, provider: {}, limit: {}, offset: {}", 
+                request.getInstrument(), request.getStatus(), request.getProvider(), request.getLimit(), request.getOffset());
+        
         Objects.requireNonNull(request, "request object cannot be null");
         
-        String instrument = StringUtils.concat("%", request.getInstrument(), "%");
-        String provider = StringUtils.concat("%", request.getProvider(), "%");
-
-        instrument = StringUtils.hasValue(instrument) ? instrument : null;
+        String instrument = StringUtils.hasValue(request.getInstrument()) 
+            ? StringUtils.concat("%", request.getInstrument(), "%") 
+            : null;
         String status = StringUtils.hasValue(request.getStatus()) ? request.getStatus() : null;
-        provider = StringUtils.hasValue(provider) ? provider : null;
+        String provider = StringUtils.hasValue(request.getProvider()) 
+            ? StringUtils.concat("%", request.getProvider(), "%") 
+            : null;
+        
+        log.debug("Processed search filters - instrument: {}, status: {}, provider: {}", instrument, status, provider);
         
         var datasets = instrumentRepository.searchInstrumentsWithProvider(
                 instrument,
@@ -95,16 +108,20 @@ public class DatasetServiceImpl implements DatasetService {
                 request.getOffset()
         ).stream().map(datasetMapper::mapToDatasetRecord).toList();
 
+        var totalCount = instrumentRepository.countSearchInstrumentsWithProvider(
+                instrument,
+                status,
+                provider
+        );
+        
+        log.info("Search completed - found {} datasets out of {} total matching criteria", datasets.size(), totalCount);
+
         return PagedResponse
                 .<DatasetRecord>builder()
                 .content(datasets)
                 .limit(request.getLimit())
                 .offset(request.getOffset())
-                .total(instrumentRepository.countSearchInstrumentsWithProvider(
-                        instrument,
-                        status,
-                        provider
-                ))
+                .total(totalCount)
                 .build();
     }
 }

@@ -110,6 +110,8 @@ public class DatasetsController {
         log.info("Retrieved {} datasets out of {} total", res.getContent().size(), res.getTotal());
 
         PaginationViewHelper.addPaginationAttributes(model, res, "datasets");
+        model.addAttribute("searchRequest", request);
+        System.out.println(request);
 
         return "fragments/dataset :: datatable";
     }

@@ -45,6 +45,11 @@ public class CtraderClientHandler extends SimpleChannelInboundHandler<ProtoMessa
       return;
     }
 
+    if(future == null) {
+      log.debug("No future to complete for this proto message type :: {}", protoMessage.getPayloadType());
+      return;
+    }
+
     future.complete(protoMessage);
   }
 
