@@ -1,6 +1,6 @@
 package com.jmorla.tstack.services.impl;
 
-import com.jmorla.tstack.dto.ProviderRecord;
+import com.jmorla.tstack.models.ProviderRecord;
 import com.jmorla.tstack.mappers.ProviderMapper;
 import com.jmorla.tstack.repositories.ProviderRepository;
 import com.jmorla.tstack.services.ProviderService;

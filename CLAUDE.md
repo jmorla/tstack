@@ -5,3 +5,4 @@
 - make use of htmx and the spring-boot-htmx helper
 - DTO object must have meanful names, never use DTO as part of the name
 - use fully qualified names only when there is a package conflit, always import and then use
+- DTO package is @src/main/java/com/jmorla/tstack/models/

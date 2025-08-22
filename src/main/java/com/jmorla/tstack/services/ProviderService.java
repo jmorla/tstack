@@ -1,6 +1,6 @@
 package com.jmorla.tstack.services;
 
-import com.jmorla.tstack.dto.ProviderRecord;
+import com.jmorla.tstack.models.ProviderRecord;
 
 import java.util.List;
 

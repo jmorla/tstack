@@ -75,9 +75,9 @@ public interface InstrumentRepository extends CrudRepository<Instrument, Long>,
             FROM instruments i
             LEFT JOIN providers p ON i.provider_id = p.id
             LEFT JOIN dataset_metadata dm ON i.id = dm.instrument_id
-            WHERE (:instrumentFilter IS NULL OR i.name LIKE :instrumentFilter OR i.description LIKE :instrumentFilter)
-              AND (:status IS NULL OR dm.status = :status)
-              AND (:providerFilter IS NULL OR p.name LIKE :providerFilter)
+            WHERE (:instrumentFilter IS NULL OR LOWER(i.name) LIKE LOWER(:instrumentFilter) OR LOWER(i.description) LIKE LOWER(:instrumentFilter))
+              AND (:status IS NULL OR LOWER(dm.status) = LOWER(:status))
+              AND (:providerFilter IS NULL OR LOWER(p.name) LIKE LOWER(:providerFilter))
             ORDER BY i.id
             LIMIT :limit OFFSET :offset
             """)
@@ -93,9 +93,9 @@ public interface InstrumentRepository extends CrudRepository<Instrument, Long>,
             FROM instruments i
             LEFT JOIN providers p ON i.provider_id = p.id
             LEFT JOIN dataset_metadata dm ON i.id = dm.instrument_id
-            WHERE (:instrumentFilter IS NULL OR i.name LIKE :instrumentFilter OR i.description LIKE :instrumentFilter)
-              AND (:status IS NULL OR dm.status = :status)
-              AND (:providerFilter IS NULL OR p.name LIKE :providerFilter)
+            WHERE (:instrumentFilter IS NULL OR LOWER(i.name) LIKE LOWER(:instrumentFilter) OR LOWER(i.description) LIKE LOWER(:instrumentFilter))
+              AND (:status IS NULL OR LOWER(dm.status) = LOWER(:status))
+              AND (:providerFilter IS NULL OR LOWER(p.name) LIKE LOWER(:providerFilter))
             """)
     long countSearchInstrumentsWithProvider(
             @Param("instrumentFilter") String instrumentFilter,

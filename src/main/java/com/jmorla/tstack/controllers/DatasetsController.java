@@ -1,10 +1,12 @@
 package com.jmorla.tstack.controllers;
 
-import com.jmorla.tstack.dto.ProviderRecord;
+import com.jmorla.tstack.models.ProviderRecord;
+import com.jmorla.tstack.models.DatasetSearchRequest;
 import com.jmorla.tstack.models.PageableRequest;
 import com.jmorla.tstack.services.DatasetService;
 import com.jmorla.tstack.services.ProviderService;
 import com.jmorla.tstack.utils.PaginationViewHelper;
+import com.jmorla.tstack.utils.StringUtils;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -88,32 +89,35 @@ public class DatasetsController {
      * a fragment that can be dynamically loaded into the page via HTMX. The response
      * includes the dataset records, pagination metadata, and total count.</p>
      * 
-     * @param limit the maximum number of records to return (default: 5)
-     * @param offset the number of records to skip for pagination (default: 0)
+     * @param request the datatable request containing pagination and filter parameters
      * @param model the Spring MVC model for passing data to the view fragment
      * @return the logical view name "fragments/dataset :: datatable" for the data table fragment
      * @since 1.0
      */
     @HxRequest
     @GetMapping("/datatable")
-    public String datatable(@RequestParam(defaultValue = "5") int limit,
-                           @RequestParam(defaultValue = "0") int offset,
-                           Model model) {
-        log.debug("Processing HTMX datatable request with limit={}, offset={}", limit, offset);
+    public String datatable(@ModelAttribute DatasetSearchRequest request, Model model) {
+        log.debug("Processing HTMX datatable request with limit={}, offset={}, instrumentFilter={}, status={}, providerFilter={}", 
+                request.getLimit(), request.getOffset(), request.getInstrument(), request.getStatus(), request.getProvider());
 
         // REMOVE THIS LINE LATER
         delay(2000);
 
-        var res = datasetService.findDatasets(PageableRequest.builder()
-                        .limit(limit)
-                        .offset(offset)
-                .build());
+        var res = hasFilterParameters(request.getInstrument(), request.getStatus(), request.getProvider())
+                ? datasetService.searchDatasets(request)
+                : datasetService.findDatasets(new PageableRequest(request.getLimit(), request.getOffset()));
 
         log.info("Retrieved {} datasets out of {} total", res.getContent().size(), res.getTotal());
 
         PaginationViewHelper.addPaginationAttributes(model, res, "datasets");
 
         return "fragments/dataset :: datatable";
+    }
+
+    private boolean hasFilterParameters(String instrumentFilter, String status, String providerFilter) {
+        return StringUtils.hasValue(instrumentFilter) ||
+               StringUtils.hasValue(status) ||
+               StringUtils.hasValue(providerFilter);
     }
 
     private static void delay(int delay) {

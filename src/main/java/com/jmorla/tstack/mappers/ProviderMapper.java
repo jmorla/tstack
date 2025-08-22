@@ -1,6 +1,6 @@
 package com.jmorla.tstack.mappers;
 
-import com.jmorla.tstack.dto.ProviderRecord;
+import com.jmorla.tstack.models.ProviderRecord;
 import com.jmorla.tstack.entities.Provider;
 import org.springframework.stereotype.Component;
 

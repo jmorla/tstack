@@ -1,6 +1,7 @@
 package com.jmorla.tstack.services;
 
 import com.jmorla.tstack.models.DatasetRecord;
+import com.jmorla.tstack.models.DatasetSearchRequest;
 import com.jmorla.tstack.models.PageableRequest;
 import com.jmorla.tstack.models.PagedResponse;
 import org.springframework.stereotype.Service;
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Service;
 public interface DatasetService {
 
     PagedResponse<DatasetRecord> findDatasets(PageableRequest request);
+
+    PagedResponse<DatasetRecord> searchDatasets(DatasetSearchRequest request);
 }

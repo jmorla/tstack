@@ -1,14 +1,14 @@
 package com.jmorla.tstack.services.impl;
 
 import com.jmorla.tstack.mappers.DatasetMapper;
-import com.jmorla.tstack.models.DatasetRecord;
-import com.jmorla.tstack.models.PageableRequest;
-import com.jmorla.tstack.models.FindDatasetResponse;
-import com.jmorla.tstack.models.PagedResponse;
+import com.jmorla.tstack.models.*;
 import com.jmorla.tstack.repositories.InstrumentRepository;
 import com.jmorla.tstack.services.DatasetService;
+import com.jmorla.tstack.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * Implementation of the DatasetService interface for managing dataset operations.
@@ -59,6 +59,52 @@ public class DatasetServiceImpl implements DatasetService {
                 .limit(request.getLimit())
                 .offset(request.getOffset())
                 .total(instrumentRepository.countAllWithProvider())
+                .build();
+    }
+
+    /**
+     * Searches for datasets based on the provided filter criteria with pagination support.
+     * 
+     * <p>This method performs a filtered search across instruments and their associated
+     * providers and dataset metadata.</p>
+     * 
+     * @param request the search request containing filter criteria and pagination parameters.
+     * @return a PagedResponse containing the filtered list of datasets, pagination metadata.
+     * @throws IllegalArgumentException if the request parameter is null
+     * @since 1.0
+     * @see DatasetSearchRequest
+     * @see PagedResponse
+     * @see DatasetRecord
+     */
+    @Override
+    public PagedResponse<DatasetRecord> searchDatasets(DatasetSearchRequest request) {
+        Objects.requireNonNull(request, "request object cannot be null");
+        
+        String instrument = StringUtils.concat("%", request.getInstrument(), "%");
+        String provider = StringUtils.concat("%", request.getProvider(), "%");
+
+        instrument = StringUtils.hasValue(instrument) ? instrument : null;
+        String status = StringUtils.hasValue(request.getStatus()) ? request.getStatus() : null;
+        provider = StringUtils.hasValue(provider) ? provider : null;
+        
+        var datasets = instrumentRepository.searchInstrumentsWithProvider(
+                instrument,
+                status,
+                provider,
+                request.getLimit(),
+                request.getOffset()
+        ).stream().map(datasetMapper::mapToDatasetRecord).toList();
+
+        return PagedResponse
+                .<DatasetRecord>builder()
+                .content(datasets)
+                .limit(request.getLimit())
+                .offset(request.getOffset())
+                .total(instrumentRepository.countSearchInstrumentsWithProvider(
+                        instrument,
+                        status,
+                        provider
+                ))
                 .build();
     }
 }

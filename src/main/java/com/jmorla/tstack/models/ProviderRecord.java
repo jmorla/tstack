@@ -1,4 +1,4 @@
-package com.jmorla.tstack.dto;
+package com.jmorla.tstack.models;
 
 import java.time.LocalDateTime;
 
