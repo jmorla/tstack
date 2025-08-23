@@ -39,20 +39,6 @@ public class DatasetsController {
     private final ProviderService providerService;
 
     /**
-     * Provides the active menu identifier for all controller methods.
-     * 
-     * <p>This method is annotated with {@code @ModelAttribute} to automatically
-     * add the active menu state to all views rendered by this controller.</p>
-     * 
-     * @return the string "datasets" indicating the active menu section
-     * @since 1.0
-     */
-    @ModelAttribute("activeMenu")
-    public String activeMenu() {
-        return "datasets";
-    }
-
-    /**
      * Provides the list of all providers for all controller methods.
      * 
      * <p>This method is annotated with {@code @ModelAttribute} to automatically
