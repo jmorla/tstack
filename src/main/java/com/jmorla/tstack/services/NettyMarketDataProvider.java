@@ -4,7 +4,7 @@ import com.jmorla.tstack.config.TstackProperties;
 import com.jmorla.tstack.ctrader.CtraderApiClient;
 import com.jmorla.tstack.exception.TstackException;
 import com.jmorla.tstack.mappers.CtraderMapper;
-import com.jmorla.tstack.models.SymbolRecord;
+import com.jmorla.tstack.models.InstrumentOverview;
 import com.xtrader.protocol.openapi.v2.ProtoOASymbolsListReq;
 import com.xtrader.protocol.openapi.v2.ProtoOASymbolsListRes;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +14,14 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-@Service
 @RequiredArgsConstructor
-public class NettyCtraderApiService implements CtraderApiService {
+public class NettyMarketDataProvider implements MarketDataProvider {
 
     private final CtraderApiClient apiClient;
     private final TstackProperties properties;
 
     @Override
-    public List<SymbolRecord> getAllAvailableSymbols() {
+    public List<InstrumentOverview> getAllAvailableSymbols() {
         var req = ProtoOASymbolsListReq.newBuilder()
                 .setIncludeArchivedSymbols(false)
                 .setCtidTraderAccountId(properties.getProviders().getCtrader().getAccountId())

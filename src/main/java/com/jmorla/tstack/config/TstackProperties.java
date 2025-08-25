@@ -16,6 +16,7 @@ public class TstackProperties {
 
     @Data
     public static class Ctrader {
+        private long id;
         private boolean enabled;
         private String clientId;
         private String clientSecret;

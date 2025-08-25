@@ -1,9 +1,10 @@
 package com.jmorla.tstack.controllers;
 
 import com.jmorla.tstack.models.ProviderRecord;
+import com.jmorla.tstack.services.MarketDataProvider;
 import com.jmorla.tstack.services.ProviderService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +25,18 @@ import java.util.List;
  */
 @Slf4j
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/datasets/download")
 public class DownloadController {
 
     private final ProviderService providerService;
+    private final MarketDataProvider marketDataProvider;
+
+    public DownloadController(
+            ProviderService providerService,
+            @Qualifier("pepperstoneDataProvider") MarketDataProvider marketDataProvider) {
+        this.providerService = providerService;
+        this.marketDataProvider = marketDataProvider;
+    }
 
     /**
      * Provides a list of providers to all views in this controller.
@@ -40,7 +48,7 @@ public class DownloadController {
      * @since 1.0
      */
     @ModelAttribute("providers")
-public List<ProviderRecord> providers() {
+    public List<ProviderRecord> providers() {
         return providerService.getProviders();
     }
 
