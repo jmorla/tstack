@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface MarketDataProvider {
 
-    List<InstrumentOverview> getAllAvailableSymbols();
+    List<InstrumentOverview> getAvailableInstruments();
 
 }

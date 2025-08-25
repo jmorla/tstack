@@ -63,7 +63,7 @@
                                     </div>
 
                                     <!-- Trading Instrument -->
-                                    <div th:replace="~{fragments/dataset :: instrument}"></div>
+                                    <div hx-get="/datasets/download/instruments" hx-trigger="load"></div>
                                 </div>
                             </div>
 

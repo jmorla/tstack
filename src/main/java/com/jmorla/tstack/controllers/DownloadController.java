@@ -1,8 +1,10 @@
 package com.jmorla.tstack.controllers;
 
+import com.jmorla.tstack.models.InstrumentOverview;
 import com.jmorla.tstack.models.ProviderRecord;
 import com.jmorla.tstack.services.MarketDataProvider;
 import com.jmorla.tstack.services.ProviderService;
+import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -66,5 +68,24 @@ public class DownloadController {
     public String download(Model model) {
         log.debug("Rendering download page");
         return "download";
+    }
+
+    /**
+     * HTMX endpoint that returns the instrument fragment with available instruments.
+     * 
+     * <p>This endpoint fetches the list of available instruments from the market data provider
+     * and returns the instrument selection fragment for dynamic updates.</p>
+     * 
+     * @param model the Spring MVC model for passing data to the view
+     * @return the instrument fragment view
+     * @since 1.0
+     */
+    @HxRequest
+    @GetMapping("/instruments")
+    public String getInstruments(Model model) {
+        log.debug("Fetching instruments for HTMX request");
+        List<InstrumentOverview> instruments = marketDataProvider.getAvailableInstruments();
+        model.addAttribute("instruments", instruments);
+        return "fragments/dataset :: instrument";
     }
 }

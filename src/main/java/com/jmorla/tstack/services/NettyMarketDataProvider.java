@@ -21,7 +21,7 @@ public class NettyMarketDataProvider implements MarketDataProvider {
     private final TstackProperties properties;
 
     @Override
-    public List<InstrumentOverview> getAllAvailableSymbols() {
+    public List<InstrumentOverview> getAvailableInstruments() {
         var req = ProtoOASymbolsListReq.newBuilder()
                 .setIncludeArchivedSymbols(false)
                 .setCtidTraderAccountId(properties.getProviders().getCtrader().getAccountId())

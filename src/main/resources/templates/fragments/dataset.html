@@ -104,8 +104,8 @@
         >
             <option value="">Choose a trading instrument</option>
             <option th:each="instrument : ${instruments}" 
-                    th:value="${instrument}"
-                    th:text="${instrument}"></option>
+                    th:value="${instrument.platformId}"
+                    th:text="${instrument.name} + ' - ' + ${instrument.description}"></option>
         </select>
         <p class="mt-1 text-xs text-gray-500">Select the trading symbol or instrument</p>
     </div>
