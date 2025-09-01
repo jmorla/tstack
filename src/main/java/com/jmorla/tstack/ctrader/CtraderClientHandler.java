@@ -1,9 +1,13 @@
 package com.jmorla.tstack.ctrader;
 
+import com.google.protobuf.GeneratedMessage;
 import com.xtrader.protocol.openapi.v2.ProtoOAErrorRes;
 import com.xtrader.protocol.openapi.v2.model.ProtoOAPayloadType;
+import com.xtrader.protocol.proto.commons.ProtoHeartbeatEvent;
 import com.xtrader.protocol.proto.commons.ProtoMessage;
 import com.xtrader.protocol.proto.commons.model.ProtoPayloadType;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -64,12 +68,28 @@ public class CtraderClientHandler extends SimpleChannelInboundHandler<ProtoMessa
             () -> {
               final var channel = ctx.channel();
               if (channel.isActive()) {
-                CtraderApiFacade.sendHeartbeatEvent(channel)
+                sendHeartbeatEvent(channel)
                     .addListener(e -> log.debug("Heartbeat sent..."));
               }
             },
             idleTimeMillis,
             idleTimeMillis,
             TimeUnit.MILLISECONDS);
+  }
+
+  /**
+   * Sends a heartbeat event to maintain connection with cTrader.
+   *
+   * @param channel the Netty channel to send the heartbeat through
+   * @return a ChannelFuture representing the completion of the write operation
+   */
+  private ChannelFuture sendHeartbeatEvent(Channel channel) {
+    return sendEvent(
+        channel,
+        ProtoHeartbeatEvent.newBuilder().setPayloadType(ProtoPayloadType.HEARTBEAT_EVENT).build());
+  }
+
+  private ChannelFuture sendEvent(Channel channel, GeneratedMessage proto) {
+    return channel.writeAndFlush(proto);
   }
 }
