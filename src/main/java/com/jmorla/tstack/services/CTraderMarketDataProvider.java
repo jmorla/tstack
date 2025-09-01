@@ -1,6 +1,6 @@
 package com.jmorla.tstack.services;
 
-import com.jmorla.tstack.config.TstackProperties;
+import com.jmorla.tstack.config.ApplicationProperties;
 import com.jmorla.tstack.ctrader.CtraderApiClient;
 import com.jmorla.tstack.exception.TstackException;
 import com.jmorla.tstack.mappers.CtraderMapper;
@@ -8,23 +8,22 @@ import com.jmorla.tstack.models.InstrumentOverview;
 import com.xtrader.protocol.openapi.v2.ProtoOASymbolsListReq;
 import com.xtrader.protocol.openapi.v2.ProtoOASymbolsListRes;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @RequiredArgsConstructor
-public class NettyMarketDataProvider implements MarketDataProvider {
+public class CTraderMarketDataProvider implements MarketDataProvider {
 
     private final CtraderApiClient apiClient;
-    private final TstackProperties properties;
+    private final ApplicationProperties.CtraderProvider provider;
 
     @Override
     public List<InstrumentOverview> getAvailableInstruments() {
         var req = ProtoOASymbolsListReq.newBuilder()
                 .setIncludeArchivedSymbols(false)
-                .setCtidTraderAccountId(properties.getProviders().getCtrader().getAccountId())
+                .setCtidTraderAccountId(provider.getAccountId())
                 .build();
 
         var future = apiClient.request(req)

@@ -23,20 +23,20 @@ application:
   version: @project.version@
 
 
-tstack:
+app:
   providers:
     ctrader:
-      id: 4
-      enabled: true
-      client_id: ${CTRADER_CLIENT_ID}
-      client_secret: ${CTRADER_CLIENT_SECRET}
-      access_token: ${CTRADER_ACCESS_TOKEN}
-      account_id: ${CTRADER_ACCOUNT_ID:0}
-      host: live.ctraderapi.com
-      port: 5035
-      enable_ssl: true
-      idle_timeout: 30000
-      connection_timeout: 30000
+      - name: Pepperstone
+        enabled: true
+        client_id: ${CTRADER_CLIENT_ID}
+        client_secret: ${CTRADER_CLIENT_SECRET}
+        access_token: ${CTRADER_ACCESS_TOKEN}
+        account_id: ${CTRADER_ACCOUNT_ID:0}
+        host: live.ctraderapi.com
+        port: 5035
+        enable_ssl: true
+        idle_timeout: 30000
+        connection_timeout: 30000
 
 logging:
   level:
