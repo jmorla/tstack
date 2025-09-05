@@ -2,7 +2,8 @@ package com.jmorla.tstack.scheduling;
 
 import com.jmorla.tstack.config.ApplicationProperties;
 import com.jmorla.tstack.ctrader.CtraderApiClient;
-import com.jmorla.tstack.services.CTraderMarketDataProvider;
+import com.jmorla.tstack.ctrader.CtraderOpenApiFacade;
+import com.jmorla.tstack.repositories.InstrumentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class MarketDataSyncJob {
 
     private final ApplicationProperties applicationProperties;
+    private final InstrumentRepository instrumentRepository;
 
     @Scheduled(cron = "0 20 22 * * MON-FRI", zone = "UTC")
     public void onFuturesMarketClose() {
@@ -33,10 +35,9 @@ public class MarketDataSyncJob {
             try {
                 log.info("Processing provider: {}", provider.getName());
                 var apiClient = createApiClient(provider);
-                var marketDataProvider = new CTraderMarketDataProvider(apiClient, provider);
-                
-                var instruments = marketDataProvider.getAvailableInstruments();
-                log.info("Retrieved {} instruments from CTrader provider: {}", instruments.size(), provider.getName());
+                var facade = new CtraderOpenApiFacade(apiClient);
+
+
             } catch (Exception e) {
                 log.error("Error retrieving instruments from CTrader provider: {}", provider.getName(), e);
             }

@@ -103,7 +103,7 @@
                 class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
         >
             <option value="">Choose a trading instrument</option>
-            <option th:each="instrument : ${instruments}" 
+            <option th:each="instrument : ${instruments}"
                     th:value="${instrument.platformId}"
                     th:text="${instrument.name} + ' - ' + ${instrument.description}"></option>
         </select>
