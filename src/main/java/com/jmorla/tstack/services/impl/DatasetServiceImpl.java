@@ -7,6 +7,7 @@ import com.jmorla.tstack.services.DatasetService;
 import com.jmorla.tstack.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -125,6 +126,7 @@ public class DatasetServiceImpl implements DatasetService {
                 .build();
     }
 
+    @Async
     @Override
     public void downloadDataset(DatasetDownloadRequest request) {
 

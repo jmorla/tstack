@@ -41,4 +41,7 @@ public class DatasetMetadata {
 
     @Column("created_at")
     private LocalDateTime createdAt;
+
+    @Column("download_progress")
+    private Double downloadProgress;
 }
