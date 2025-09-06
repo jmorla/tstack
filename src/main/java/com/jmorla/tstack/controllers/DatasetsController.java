@@ -3,6 +3,7 @@ package com.jmorla.tstack.controllers;
 import com.jmorla.tstack.config.ApplicationProperties;
 import com.jmorla.tstack.ctrader.CtraderOpenApiFacade;
 import com.jmorla.tstack.mappers.CtraderMapper;
+import com.jmorla.tstack.models.DatasetDownloadRequest;
 import com.jmorla.tstack.models.InstrumentOverview;
 import com.jmorla.tstack.models.ProviderRecord;
 import com.jmorla.tstack.models.DatasetSearchRequest;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -175,5 +177,26 @@ public class DatasetsController {
         }
         
         return "fragments/download :: instrument-selection";
+    }
+
+    /**
+     * Handles dataset download requests.
+     * 
+     * <p>This endpoint processes dataset download requests with the selected
+     * provider and instrument information.</p>
+     * 
+     * @param request the dataset download request containing provider and instrument IDs
+     * @param model the Spring MVC model for passing data to the view
+     * @return redirect to the datasets page
+     * @since 1.0
+     */
+    @PostMapping("/download")
+    public String downloadDataset(@ModelAttribute DatasetDownloadRequest request, Model model) {
+        log.debug("Processing dataset download request for provider: {}, instrument: {}", 
+                request.providerId(), request.instrumentId());
+        
+        datasetService.downloadDataset(request);
+        
+        return "redirect:/datasets";
     }
 }

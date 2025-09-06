@@ -28,14 +28,16 @@
              x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
              class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-md sm:w-full"
              x-data="{
-                        loading: false,
+                        selectLoading: false,
+                        modalLoading: false,
                         selectedProvider: '',
                         selectedInstrument: '',
                         get isFormValid() {
                             return this.selectedProvider !== '' && this.selectedInstrument !== '';
                         }
                     }">
-
+            <!-- Skeleton -->
+            <div th:replace="~{fragments/download :: dataset-download-skeleton}"></div>
             <!-- Header -->
             <div class="px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center">
@@ -53,70 +55,79 @@
                 </div>
             </div>
 
-            <!-- Content -->
-            <div class="px-6 py-6 space-y-6">
-                <!-- Provider Selection -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-900 mb-3">
-                        Data Provider
-                    </label>
-                    <div class="relative">
-                        <select x-model="selectedProvider" 
-                                name="providerId"
-                                hx-get="/datasets/instrument-selection"
-                                hx-trigger="change"
-                                hx-target="#instrument-container"
-                                hx-swap="innerHTML"
-                                hx-include="this"
-                                hx-indicator="#instrument-selection-loading"
-                                class="block w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                                @htmx:before-request="loading = true"
-                                @htmx:after-request="loading = false">
-                            <option value="">Select a provider...</option>
-                            <option th:each="provider : ${providers}" 
-                                    th:value="${provider.id}" 
-                                    th:text="${provider.name}"></option>
-                        </select>
-                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
+            <!-- Form Content -->
+            <form class="contents"
+                  hx-post="/datasets/download"
+                  hx-swap="none"
+                  hx-indicator="#dataset-download-skeleton"
+                  @htmx:before-request="modalLoading = true"
+                  @htmx:after-request="modalLoading = false">
+                <div class="px-6 py-6 space-y-6">
+                    <!-- Provider Selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-3">
+                            Data Provider
+                        </label>
+                        <div class="relative">
+                            <select x-model="selectedProvider" 
+                                    name="providerId"
+                                    hx-get="/datasets/instrument-selection"
+                                    hx-trigger="change"
+                                    hx-target="#instrument-container"
+                                    hx-swap="innerHTML"
+                                    hx-include="this"
+                                    hx-indicator="#instrument-selection-loading"
+                                    class="block w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                                    @htmx:before-request="selectLoading = true"
+                                    @htmx:after-request="selectLoading = false">
+                                <option value="">Select a provider...</option>
+                                <option th:each="provider : ${providers}" 
+                                        th:value="${provider.id}" 
+                                        th:text="${provider.name}"></option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Instrument Selection -->
+                    <div id="instrument-container">
+                        <div th:replace="~{fragments/download :: instrument-selection}"></div>
+                    </div>
+                    <div th:replace="~{fragments/download :: instrument-selection-skeleton}"></div>
                 </div>
 
-                <!-- Instrument Selection -->
-                <div id="instrument-container">
-                    <div th:replace="~{fragments/download :: instrument-selection}"></div>
+                <!-- Actions -->
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
+                    <div class="flex gap-3 justify-end">
+                        <button type="button" @click="showDownloadModal = false" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            Cancel
+                        </button>
+                        <button type="submit" :disabled="!isFormValid" :class="isFormValid ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 cursor-not-allowed'" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+                            </svg>
+                            Download Dataset
+                        </button>
+                    </div>
                 </div>
-                <div th:replace="~{fragments/download :: instrument-selection-skeleton}"></div>
-            </div>
-
-            <!-- Actions -->
-            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
-                <div class="flex gap-3 justify-end">
-                    <button @click="showDownloadModal = false" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        Cancel
-                    </button>
-                    <button :disabled="!isFormValid" :class="isFormValid ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 cursor-not-allowed'" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
-                        </svg>
-                        Download Dataset
-                    </button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 
 <!-- Trading Instrument Selection Fragment -->
-<div th:fragment="instrument-selection" x-show="!loading">
+<div th:fragment="instrument-selection" x-show="!selectLoading">
     <label class="block text-sm font-medium text-gray-900 mb-3">
         Trading Instrument
     </label>
     <div class="relative">
-        <select x-model="selectedInstrument" class="block w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+        <select x-model="selectedInstrument" 
+                name="instrumentId"
+                class="block w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
             <option value="">Select an instrument...</option>
             <option th:each="instrument : ${instruments}"
                     th:value="${instrument.platformId}"
@@ -135,6 +146,44 @@
     <div class="py-3">
         <div class="h-4 bg-gray-200 rounded w-24 mb-3"></div>
         <div class="h-12 bg-gray-200 rounded-lg"></div>
+    </div>
+</div>
+
+<div id="dataset-download-skeleton" th:fragment="dataset-download-skeleton" class="w-full max-w-md animate-pulse loading-indicator">
+    <!-- Header Skeleton -->
+    <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
+            </div>
+            <div class="ml-4 flex-1">
+                <div class="h-5 bg-gray-200 rounded w-32 mb-2"></div>
+                <div class="h-4 bg-gray-200 rounded w-48"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Skeleton -->
+    <div class="px-6 py-6 space-y-6">
+        <!-- Provider Selection Skeleton -->
+        <div>
+            <div class="h-4 bg-gray-200 rounded w-20 mb-3"></div>
+            <div class="h-12 bg-gray-200 rounded-lg"></div>
+        </div>
+
+        <!-- Instrument Selection Skeleton -->
+        <div>
+            <div class="h-4 bg-gray-200 rounded w-24 mb-3"></div>
+            <div class="h-12 bg-gray-200 rounded-lg"></div>
+        </div>
+    </div>
+
+    <!-- Actions Skeleton -->
+    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
+        <div class="flex gap-3 justify-end">
+            <div class="h-10 w-16 bg-gray-200 rounded-md"></div>
+            <div class="h-10 w-32 bg-gray-200 rounded-md"></div>
+        </div>
     </div>
 </div>
 

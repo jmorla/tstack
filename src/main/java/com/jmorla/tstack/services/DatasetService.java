@@ -1,5 +1,6 @@
 package com.jmorla.tstack.services;
 
+import com.jmorla.tstack.models.DatasetDownloadRequest;
 import com.jmorla.tstack.models.DatasetRecord;
 import com.jmorla.tstack.models.DatasetSearchRequest;
 import com.jmorla.tstack.models.PageableRequest;
@@ -12,4 +13,6 @@ public interface DatasetService {
     PagedResponse<DatasetRecord> findDatasets(PageableRequest request);
 
     PagedResponse<DatasetRecord> searchDatasets(DatasetSearchRequest request);
+
+    void downloadDataset(DatasetDownloadRequest request);
 }

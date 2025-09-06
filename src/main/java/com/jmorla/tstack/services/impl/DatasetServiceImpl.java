@@ -124,4 +124,9 @@ public class DatasetServiceImpl implements DatasetService {
                 .total(totalCount)
                 .build();
     }
+
+    @Override
+    public void downloadDataset(DatasetDownloadRequest request) {
+
+    }
 }
