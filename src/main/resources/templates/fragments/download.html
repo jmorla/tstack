@@ -15,7 +15,14 @@
          x-transition:leave="opacity-0"
          aria-hidden="true"></div>
 
-    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0 relative z-10">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0 relative z-10"
+         x-data="{
+            selectLoading: false,
+            modalLoading: false,
+            selectedProvider: '',
+            selectedInstrument: '',
+            get isFormValid() { return this.selectedProvider !== '' && this.selectedInstrument !== '';}
+            }">
         <!-- Modal Container -->
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <!-- Modal Content -->
@@ -26,98 +33,92 @@
              x-transition:leave="ease-in duration-200"
              x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
              x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-md sm:w-full"
-             x-data="{
-                        selectLoading: false,
-                        modalLoading: false,
-                        selectedProvider: '',
-                        selectedInstrument: '',
-                        get isFormValid() {
-                            return this.selectedProvider !== '' && this.selectedInstrument !== '';
-                        }
-                    }">
+             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
             <!-- Skeleton -->
-            <div th:replace="~{fragments/download :: dataset-download-skeleton}"></div>
-            <!-- Header -->
-            <div class="px-6 py-4 border-b border-gray-200">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="ml-4">
-                        <h3 class="text-lg font-medium text-gray-900">Download Dataset</h3>
-                        <p class="text-sm text-gray-500">Get historical market data from trusted providers</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Form Content -->
-            <form class="contents"
-                  hx-post="/datasets/download"
-                  hx-swap="none"
-                  hx-indicator="#dataset-download-skeleton"
-                  @htmx:before-request="modalLoading = true"
-                  @htmx:after-request="modalLoading = false">
-                <div class="px-6 py-6 space-y-6">
-                    <!-- Provider Selection -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-900 mb-3">
-                            Data Provider
-                        </label>
-                        <div class="relative">
-                            <select x-model="selectedProvider" 
-                                    name="providerId"
-                                    hx-get="/datasets/instrument-selection"
-                                    hx-trigger="change"
-                                    hx-target="#instrument-container"
-                                    hx-swap="innerHTML"
-                                    hx-include="this"
-                                    hx-indicator="#instrument-selection-loading"
-                                    class="block w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                                    @htmx:before-request="selectLoading = true"
-                                    @htmx:after-request="selectLoading = false">
-                                <option value="">Select a provider...</option>
-                                <option th:each="provider : ${providers}" 
-                                        th:value="${provider.id}" 
-                                        th:text="${provider.name}"></option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
+                <div th:replace="~{fragments/download :: dataset-download-skeleton}"></div>
+                <div x-show="!modalLoading">
+                    <!-- Header -->
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900" x-text="modalLoading">Download Dataset</h3>
+                                <p class="text-sm text-gray-500">Get historical market data from trusted providers</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Instrument Selection -->
-                    <div id="instrument-container">
-                        <div th:replace="~{fragments/download :: instrument-selection}"></div>
-                    </div>
-                    <div th:replace="~{fragments/download :: instrument-selection-skeleton}"></div>
-                </div>
+                    <!-- Form Content -->
+                    <form class="contents"
+                          hx-post="/datasets/download"
+                          hx-trigger="submit"
+                          hx-swap="none"
+                          hx-indicator="#dataset-download-skeleton"
+                          @htmx:before-request.self="modalLoading = true"
+                          @htmx:after-request.self="modalLoading = false">
+                        <div class="px-6 py-6 space-y-6">
+                            <!-- Provider Selection -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-900 mb-3">
+                                    Data Provider
+                                </label>
+                                <div class="relative">
+                                    <select x-model="selectedProvider"
+                                            name="providerId"
+                                            hx-get="/datasets/instrument-selection"
+                                            hx-trigger="change"
+                                            hx-target="#instrument-container"
+                                            hx-swap="innerHTML"
+                                            hx-include="this"
+                                            hx-indicator="#instrument-selection-loading"
+                                            class="block w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                                            @htmx:before-request.self="selectLoading = true"
+                                            @htmx:after-request.self="selectLoading = false">
+                                        <option value="">Select a provider...</option>
+                                        <option th:each="provider : ${providers}"
+                                                th:value="${provider.id}"
+                                                th:text="${provider.name}"></option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
 
-                <!-- Actions -->
-                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
-                    <div class="flex gap-3 justify-end">
-                        <button type="button" @click="showDownloadModal = false" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            Cancel
-                        </button>
-                        <button type="submit" :disabled="!isFormValid" :class="isFormValid ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 cursor-not-allowed'" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
-                            </svg>
-                            Download Dataset
-                        </button>
-                    </div>
+                            <!-- Instrument Selection -->
+                            <div id="instrument-container">
+                                <div th:replace="~{fragments/download :: instrument-selection}"></div>
+                            </div>
+                            <div th:replace="~{fragments/download :: instrument-selection-skeleton}"></div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
+                            <div class="flex gap-3 justify-end">
+                                <button type="button" @click="showDownloadModal = false" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    Cancel
+                                </button>
+                                <button type="submit" :disabled="!isFormValid" :class="isFormValid ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 cursor-not-allowed'" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+                                    </svg>
+                                    Download Dataset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
 
 <!-- Trading Instrument Selection Fragment -->
 <div th:fragment="instrument-selection" x-show="!selectLoading">
@@ -149,7 +150,8 @@
     </div>
 </div>
 
-<div id="dataset-download-skeleton" th:fragment="dataset-download-skeleton" class="w-full max-w-md animate-pulse loading-indicator">
+<div id="dataset-download-skeleton" th:fragment="dataset-download-skeleton"
+     class="bg-white rounded-lg shadow-lg border border-gray-200 w-full max-w-md animate-pulse loading-indicator">
     <!-- Header Skeleton -->
     <div class="px-6 py-4 border-b border-gray-200">
         <div class="flex items-center">
