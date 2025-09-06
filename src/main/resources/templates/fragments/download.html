@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:x-transition="http://www.w3.org/1999/xhtml">
+      xmlns:x-transition="http://www.w3.org/1999/xhtml" xmlns:@htmx="http://www.w3.org/1999/xhtml">
 <body>
 
 
@@ -28,6 +28,7 @@
              x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
              class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-md sm:w-full"
              x-data="{
+                        loading: false,
                         selectedProvider: '',
                         selectedInstrument: '',
                         get isFormValid() {
@@ -60,7 +61,17 @@
                         Data Provider
                     </label>
                     <div class="relative">
-                        <select x-model="selectedProvider" class="block w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+                        <select x-model="selectedProvider" 
+                                name="providerId"
+                                hx-get="/datasets/instrument-selection"
+                                hx-trigger="change"
+                                hx-target="#instrument-container"
+                                hx-swap="innerHTML"
+                                hx-include="this"
+                                hx-indicator="#instrument-selection-loading"
+                                class="block w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                                @htmx:before-request="loading = true"
+                                @htmx:after-request="loading = false">
                             <option value="">Select a provider...</option>
                             <option th:each="provider : ${providers}" 
                                     th:value="${provider.id}" 
@@ -75,7 +86,10 @@
                 </div>
 
                 <!-- Instrument Selection -->
-                <div th:replace="~{fragments/download :: instrument-selection}"></div>
+                <div id="instrument-container">
+                    <div th:replace="~{fragments/download :: instrument-selection}"></div>
+                </div>
+                <div th:replace="~{fragments/download :: instrument-selection-skeleton}"></div>
             </div>
 
             <!-- Actions -->
@@ -97,38 +111,16 @@
 </div>
 
 <!-- Trading Instrument Selection Fragment -->
-<div th:fragment="instrument-selection">
+<div th:fragment="instrument-selection" x-show="!loading">
     <label class="block text-sm font-medium text-gray-900 mb-3">
         Trading Instrument
     </label>
     <div class="relative">
         <select x-model="selectedInstrument" class="block w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
             <option value="">Select an instrument...</option>
-            <option value="EURUSD">EUR/USD - Euro vs US Dollar</option>
-            <option value="GBPUSD">GBP/USD - British Pound vs US Dollar</option>
-            <option value="USDJPY">USD/JPY - US Dollar vs Japanese Yen</option>
-            <option value="AUDUSD">AUD/USD - Australian Dollar vs US Dollar</option>
-            <option value="USDCAD">USD/CAD - US Dollar vs Canadian Dollar</option>
-            <option value="USDCHF">USD/CHF - US Dollar vs Swiss Franc</option>
-            <option value="NZDUSD">NZD/USD - New Zealand Dollar vs US Dollar</option>
-            <option value="EURGBP">EUR/GBP - Euro vs British Pound</option>
-            <option value="EURJPY">EUR/JPY - Euro vs Japanese Yen</option>
-            <option value="GBPJPY">GBP/JPY - British Pound vs Japanese Yen</option>
-            <option value="XAUUSD">XAU/USD - Gold vs US Dollar</option>
-            <option value="XAGUSD">XAG/USD - Silver vs US Dollar</option>
-            <option value="WTIUSD">WTI/USD - Crude Oil WTI</option>
-            <option value="UKOUSD">UKO/USD - Brent Crude Oil</option>
-            <option value="US30">US30 - Dow Jones Industrial Average</option>
-            <option value="SPX500">SPX500 - S&P 500</option>
-            <option value="NAS100">NAS100 - NASDAQ 100</option>
-            <option value="UK100">UK100 - FTSE 100</option>
-            <option value="GER30">GER30 - DAX 30</option>
-            <option value="BTCUSD">BTC/USD - Bitcoin vs US Dollar</option>
-            <option value="ETHUSD">ETH/USD - Ethereum vs US Dollar</option>
-            <option value="AAPL">AAPL - Apple Inc.</option>
-            <option value="GOOGL">GOOGL - Alphabet Inc.</option>
-            <option value="MSFT">MSFT - Microsoft Corporation</option>
-            <option value="TSLA">TSLA - Tesla Inc.</option>
+            <option th:each="instrument : ${instruments}"
+                    th:value="${instrument.platformId}"
+                    th:text="${instrument.name} + ' - ' + ${instrument.description}"></option>
         </select>
         <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,8 +131,8 @@
 </div>
 
 <!-- Trading Instrument Selection Skeleton Fragment -->
-<div th:fragment="instrument-selection-skeleton" class="px-6 py-6 space-y-6">
-    <div>
+<div id="instrument-selection-loading" th:fragment="instrument-selection-skeleton" class="w-full max-w-md animate-pulse loading-indicator">
+    <div class="py-3">
         <div class="h-4 bg-gray-200 rounded w-24 mb-3"></div>
         <div class="h-12 bg-gray-200 rounded-lg"></div>
     </div>
